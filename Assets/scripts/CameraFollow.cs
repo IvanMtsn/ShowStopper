@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
+    Vector3 _offset;
+    public Transform PlayerPos;
     public float Sensitivity
     {
         get { return sensitivity; }
@@ -19,6 +21,7 @@ public class CameraFollow : MonoBehaviour
 
     private void Start()
     {
+        transform.position = PlayerPos.position + _offset;
         Camera.main.fieldOfView = 90;
         Cursor.lockState = CursorLockMode.Locked;
         //Cursor.SetCursor
