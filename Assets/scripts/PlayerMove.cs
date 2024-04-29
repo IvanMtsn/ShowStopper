@@ -14,6 +14,8 @@ public class PlayerMove : MonoBehaviour
 
     float _lookSpeed = 2f;
     float _lookXLimit = 90f;
+    float _curSpeedX=0;
+    float _curSpeedY=0;
 
     int _fov = 90;
 
@@ -35,15 +37,23 @@ public class PlayerMove : MonoBehaviour
     void Update()
     {
 
-        #region Handles Movment
+        #region Handles Movement
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
 
-        // Press Left Shift to run
-        float curSpeedX = canMove ? _walkSpeed * Input.GetAxisRaw("Vertical") : 0;
-        float curSpeedY = canMove ? _walkSpeed * Input.GetAxisRaw("Horizontal") : 0;
+        if (characterController.isGrounded)
+        {
+            _curSpeedX = canMove ? _walkSpeed * Input.GetAxisRaw("Vertical") : 0;
+            _curSpeedY = canMove ? _walkSpeed * Input.GetAxisRaw("Horizontal") : 0;
+        }
+        else
+        {
+            _curSpeedX = canMove ? _walkSpeed * Input.GetAxis("Vertical") : 0;
+            _curSpeedY = canMove ? _walkSpeed * Input.GetAxis("Horizontal") : 0;
+            moveDirection.y -= _gravity * Time.deltaTime;
+        }
         float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+        moveDirection = (forward * _curSpeedX) + (right * _curSpeedY);
 
         #endregion
 
@@ -55,11 +65,6 @@ public class PlayerMove : MonoBehaviour
         else
         {
             moveDirection.y = movementDirectionY;
-        }
-        //Gravitation
-        if (!characterController.isGrounded)
-        {
-            moveDirection.y -= _gravity * Time.deltaTime;
         }
 
         #endregion
