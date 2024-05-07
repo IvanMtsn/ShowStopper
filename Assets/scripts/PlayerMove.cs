@@ -25,7 +25,7 @@ public class PlayerMove : MonoBehaviour
     public bool canMove = true;
 
 
-    CharacterController characterController;
+    public CharacterController characterController;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -45,6 +45,7 @@ public class PlayerMove : MonoBehaviour
         {
             _curSpeedX = canMove ? _walkSpeed * Input.GetAxisRaw("Vertical") : 0;
             _curSpeedY = canMove ? _walkSpeed * Input.GetAxisRaw("Horizontal") : 0;
+            moveDirection.y = 0;
         }
         else
         {
@@ -85,4 +86,5 @@ public class PlayerMove : MonoBehaviour
     {
         playerCamera.transform.position = transform.position;
     }
+    public Vector3 GetMovement() { return moveDirection; }
 }
