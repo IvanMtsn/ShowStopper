@@ -1,5 +1,4 @@
 # ShowStopper
- Action FPS Lernspiel
-HTL WIEN WEST 
-IT-Sicherheit Sommersemester 2023/24
+ Action FPS Learning game
+ former school project
 Ivan Matosin
