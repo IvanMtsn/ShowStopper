@@ -6,37 +6,51 @@ public class HandgunBasic : MonoBehaviour
 {
     public Animator GunAnimator;
     PlayerMove _player;
+    bool _readyToShoot = true;
+    float _shootDelay = 0.55f;
+    float _lastShootTime = 0f;
+
     // Start is called before the first frame update
     void Start()
     {
         _player = GetComponent<PlayerMove>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        #region Shoot and Delay
+        if ((Input.GetButtonDown("Fire1") || Input.GetButton("Fire1")) && _readyToShoot)
+        {
+            Shoot();
+            _lastShootTime = Time.time;
+            _readyToShoot = false;
+        }
+
+        if (!_readyToShoot && Time.time - _lastShootTime >= _shootDelay)
+        {
+            _readyToShoot = true;
+        }
+        #endregion
+
+        #region Animators
         GunAnimator.SetFloat("walkingSpeedX", _player.GetMovement().x);
         GunAnimator.SetFloat("walkingSpeedY", _player.GetMovement().y);
         GunAnimator.SetFloat("speed", _player.GetMovement().sqrMagnitude);
-        Debug.Log(_player.GetMovement().sqrMagnitude);
         GunAnimator.SetBool("isGrounded", _player.characterController.isGrounded);
-        if (Input.GetButtonDown("Fire1"))
-        {
-            Shoot();
-        }
-        Debug.Log(GunAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
+        #endregion
     }
+
     void Shoot()
     {
-        if (GunAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name != "Armature.002_ShootBasic")
-        {
-            GunAnimator.SetTrigger("shootBasicTrigger");
-            //alles andere
-        }
-    }
-    IEnumerator BOOM()
-    {
+        GunAnimator.SetBool("isShooting", true);
         GunAnimator.SetTrigger("shootBasicTrigger");
-        yield return new WaitForSeconds(0.5f);
+        StartCoroutine(EndShot());
+    }
+
+    IEnumerator EndShot()
+    {
+        yield return new WaitForSeconds(0.4f);
+        GunAnimator.ResetTrigger("shootBasicTrigger");
+        GunAnimator.SetBool("isShooting", false);
     }
 }
